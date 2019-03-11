@@ -34,6 +34,12 @@ def create_app(test_config=None):
     from . import ssl_checker
     app.register_blueprint(ssl_checker.sc)
     
+    from . import csr_generator
+    app.register_blueprint(csr_generator.cg)
+    
+    from . import index
+    app.register_blueprint(index.bp)
+    app.add_url_rule('/', endpoint='index')
 
     def time_convert(ASN_time):
         return datetime.datetime.strptime(ASN_time.decode('ascii'), '%Y%m%d%H%M%SZ')

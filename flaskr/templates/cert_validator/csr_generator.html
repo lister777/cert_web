@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}CSR-Generator{% endblock %}</h1>
+  <h4>
+    <a href="{{ url_for('index.index') }}">Home</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{{ url_for('ssl_checker.sslchecker') }}">SSL-Checker</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{{ url_for('csr_generator.csr_generator') }}">CSR-Generator</a>
+  </h4>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <table id="subjects_table" style="width:100%">
+      <tr>
+        <td>
+            <label for="O">Organization Name</label>
+            <input name="O" id="O" required />
+        </td>
+        <td>
+            <label for="OU">Organizational unit name</label>
+            <input name="OU" id="OU" required />
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <label for="L">Locality name</label>
+            <input name="L" id="L" required />
+        </td>
+        <td>
+            <label for="ST">State or province name</label>
+            <input name="ST" id="ST" required />
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <label for="C">Country Name</label>
+            <input name="C" id="C" required />
+        </td>
+        <td>
+            <label for="ealg">Encryption Algorithmn</label>
+            <select name="ealg" id="ealg" autofocus="true">
+              <option value="RSA">RSA</option>
+            </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <label for="halg">Hash Algorithmn</label>
+            <select name="halg" id="halg" autofocus="true">
+              <option value="SHA256">SHA256</option>
+              <option value="SHA384">SHA384</option>
+              <option value="SHA512">SHA512</option>
+            </select>
+        </td>
+        <td>
+            <label for="rsaeb">Encryption Bits</label>
+            <select name="rsaeb" id="rsaeb" autofocus="true">
+              <option value="1024">1024</option>
+              <option value="2048">2048</option>
+              <option value="4096">4096</option>
+            </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <label for="emailAddress">E-mail address</label>
+            <input name="emailAddress" id="emailAddress" required />
+        </td>
+        <td>
+            <label for="CN">Common Name</label>
+            <input name="CN" id="CN" required />
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <input type="submit" value="Generate CSR" onclick="checkEmpty()">
+        </td>
+        <td>
+            <button type="button" onclick="defaultValue()">Auto Fill</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+  
+  <p>
+    {% for output in outputs %}
+        <article class="cert">
+                <div>
+                    <pre>{{ output }}</pre>
+                </div>
+            </header>
+        {% if not loop.last %}
+            <hr>
+        {% endif %}
+    {% endfor %}
+ </p>
+ 
+<script>
+function defaultValue() {
+  document.getElementById("O").defaultValue = "example";
+  document.getElementById("OU").defaultValue = "security";
+  document.getElementById("L").defaultValue = "Sydney";
+  document.getElementById("ST").defaultValue = "NSW";
+  document.getElementById("C").defaultValue = "AU";
+  document.getElementById("emailAddress").defaultValue = "test@example.com";
+  document.getElementById("CN").defaultValue = "example.com";
+}
+
+function checkEmpty(){
+    var inputs = document.getElementById("subjects_table").getElementsByTagName('input')
+    for (var input of inputs){
+        if (input.value === ""){
+         alert("Please Fill All Required Field");
+         return false;
+        }
+    }
+}
+</script>
+
+{% endblock %}

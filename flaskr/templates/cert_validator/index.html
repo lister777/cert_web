@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}SSL Certificate Tools{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <nav>
+      <ul>
+          <a href="{{ url_for('ssl_checker.sslchecker') }}">SSL-Checker</a>
+      </ul>
+      <ul>
+          <a href="{{ url_for('csr_generator.csr_generator') }}">CSR-Generator</a>
+      </ul>
+    </nav>
+{% endblock %}

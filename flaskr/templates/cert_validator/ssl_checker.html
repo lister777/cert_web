@@ -2,6 +2,13 @@
 
 {% block header %}
   <h1>{% block title %}SSL-Checker{% endblock %}</h1>
+  <h4>
+    <a href="{{ url_for('index.index') }}">Home</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{{ url_for('ssl_checker.sslchecker') }}">SSL-Checker</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{{ url_for('csr_generator.csr_generator') }}">CSR-Generator</a>
+  </h4>
 {% endblock %}
 
 {% block content %}
@@ -11,21 +18,26 @@
     <input type="submit" value="Check SSL">
   </form>
   
- {% for cert in certs %}
-      <article class="cert">
-              <div>
-                  <div>Common Name: {{ cert[0].get_subject().commonName }}</div>
-                  <div>Serial Number: {{ cert[0].get_serial_number() }}</div>
-                  <div>Signature Algorithm: {{ cert[0].get_signature_algorithm().decode('utf-8') }}</div>
-                  <div>Issuer: {{ cert[0].get_issuer() }}</div>
-                  <div>Subject: {{ cert[0].get_subject() }}</div>
-                  <div>Valid from {{ time_convert(cert[0].get_notBefore()) }} to {{ time_convert(cert[0].get_notAfter()) }} </div>
-                  <div>Certificate:</div>
-                  <div>{{ cert[1] }}</div>
-              </div>
-          </header>
-      {% if not loop.last %}
-          <hr>
-      {% endif %}
-  {% endfor %}
+ {% if error %}
+ <p></p><div>Error: {{ error }}</div></p>
+ {% endif %}
+ <p>
+    {% for cert in certs %}
+        <article class="cert">
+                <div>
+                    <div>Common Name: {{ cert[0].get_subject().commonName }}</div>
+                    <div>Serial Number: {{ cert[0].get_serial_number() }}</div>
+                    <div>Signature Algorithm: {{ cert[0].get_signature_algorithm().decode('utf-8') }}</div>
+                    <div>Issuer: {{ cert[0].get_issuer() }}</div>
+                    <div>Subject: {{ cert[0].get_subject() }}</div>
+                    <div>Valid from {{ time_convert(cert[0].get_notBefore()) }} to {{ time_convert(cert[0].get_notAfter()) }} </div>
+                    <div>Certificate:</div>
+                    <pre>{{ cert[1] }}</pre>
+                </div>
+            </header>
+        {% if not loop.last %}
+            <hr>
+        {% endif %}
+    {% endfor %}
+ </p>
 {% endblock %}
