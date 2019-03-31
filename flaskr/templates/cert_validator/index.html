@@ -5,12 +5,13 @@
 {% endblock %}
 
 {% block content %}
-    <nav>
-      <ul>
+      <p>
           <a href="{{ url_for('ssl_checker.sslchecker') }}">SSL-Checker</a>
-      </ul>
-      <ul>
+      </p>
+      <p>
           <a href="{{ url_for('csr_generator.csr_generator') }}">CSR-Generator</a>
-      </ul>
-    </nav>
+      </p>
+      <p>
+          <a href="{{ url_for('cert_converter.cert_converter') }}">SSL-Converter</a>
+      </p>
 {% endblock %}

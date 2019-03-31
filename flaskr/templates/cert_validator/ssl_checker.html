@@ -8,6 +8,8 @@
     <a href="{{ url_for('ssl_checker.sslchecker') }}">SSL-Checker</a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="{{ url_for('csr_generator.csr_generator') }}">CSR-Generator</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{{ url_for('cert_converter.cert_converter') }}">SSL-Converter</a>
   </h4>
 {% endblock %}
 
@@ -32,7 +34,7 @@
                     <div>Subject: {{ cert[0].get_subject() }}</div>
                     <div>Valid from {{ time_convert(cert[0].get_notBefore()) }} to {{ time_convert(cert[0].get_notAfter()) }} </div>
                     <div>Certificate:</div>
-                    <pre>{{ cert[1] }}</pre>
+                    <textarea rows="25" cols="80" style="font-size:10pt">{{ cert[1] }}</textarea>
                 </div>
             </header>
         {% if not loop.last %}

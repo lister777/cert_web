@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <head><script src="//code.jquery.com/jquery-1.11.3.min.js"></script></head>
+  <h1>{% block title %}SSL-Converter{% endblock %}</h1>
+  <h4>
+    <a href="{{ url_for('index.index') }}">Home</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{{ url_for('ssl_checker.sslchecker') }}">SSL-Checker</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{{ url_for('csr_generator.csr_generator') }}">CSR-Generator</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{{ url_for('cert_converter.cert_converter') }}">SSL-Converter</a>
+  </h4>
+{% endblock %}
+
+{% block content %}
+<div id="left">
+  <form method="post"  enctype="multipart/form-data">
+    <table id="ssl_table">
+      <tr>
+        <td>Type of Current Certificate <strong class="star_symbol">*</strong></td>
+        <td>
+            <label class="conver-format">
+              <input type="radio" name="sourceformat"  id="sourceformat" value="PEM" checked>PEM&nbsp;&nbsp;
+            </label>
+            <!--
+            <label class="conver-format">
+              <input type="radio" name="sourceformat"  id="sourceformatPFX" value="PFX">PFX&nbsp;&nbsp;
+            </label>
+            -->
+            <label class="conver-format">
+              <input type="radio" name="sourceformat"  id="sourceformatDER" value="DER">DER
+            </label>                
+        </td>
+      </tr>
+      <tr>
+        <td > Type To Convert To <strong class="star_symbol">*</strong></td>
+        <td>
+          <label class="conver-format">
+            <input type="radio" name="targetformat" id="targetformatDER" value="DER"   checked>DER&nbsp;&nbsp;
+          </label>
+          <!--
+          <label class="conver-format">
+            <input type="radio" name="targetformat" id="targetformatP7B" value="P7B">P7B&nbsp;&nbsp;
+          </label>
+          <label class="conver-format">
+            <input type="radio" name="targetformat" id="targetformatPFX" value="PFX">PFX&nbsp;&nbsp;
+          </label>
+          <label class="conver-format">
+            <input type="radio" name="targetformat" id="targetformatJKS" value="JKS">JKS&nbsp;&nbsp;
+          </label>
+          -->
+          <label class="conver-format">
+            <input type="radio" name="targetformat" id="targetformatPEM" value="PEM" >PEM
+          </label>              
+        </td>
+      </tr>
+      <tr valign="top">
+        <td>  
+          <div class="row  text-left">
+            <div class="col-xs-7 col-md-7">
+              Certificate File:<strong class="star_symbol">*</strong> 
+            </div>  
+          </div>      
+        </td>
+        
+        <td>
+          <div>
+            <textarea rows="10" cols="50" style="font-size:10pt" class="form-control text-file-box" id="sourcefile_pastebox" name="sourcefile_pastebox" placeholder="Paste certificate here"></textarea>
+          </div>
+          <div class="col-xs-5 col-md-5 col-md-pull-1">
+            <div id="or_import">or import</div>
+            <input type="file" id="sourcefile" name="sourcefile" value="Load">
+          </div>   
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="submit" value="SSL-Convert">
+        </td>
+        <td>
+          {% if cert %}
+            <button id="download">Download</button>
+            <textarea id="hidden_text" hidden>{{ cert[0] }}</textarea>
+
+          {% endif %}
+        </td>
+      </tr>
+      
+  </form>
+</div>
+
+
+<script>
+$(function () {
+   if($('#sourceformat').is(':checked')) {
+     $('input[name=targetformat]').remove('disabled');
+     $('#targetformatPEM').attr('disabled','disabled');
+   };
+});
+
+var f = $('input[name=sourceformat]');
+f.click(function() {
+      if ($('#sourceformatDER').is(':checked')) {
+        $('input[name=targetformat]').removeAttr('disabled checked');
+        $('#targetformatDER').prop('disabled', true);
+        $('#targetformatPEM').prop('checked', true);
+        $('#sourcefile_pastebox, #or_import').hide();
+      };
+      if ($('#sourceformat').is(':checked')) {
+        $('input[name=targetformat]').removeAttr('disabled checked');
+        $('#targetformatPEM').prop('disabled',true);
+        $('#targetformatDER').prop('checked',true);
+        $('#sourcefile_pastebox, #or_import').show();
+        $('#sourcefile_pastebox').val('')
+      };
+});
+
+</script>
+
+<script>
+  var i = $('#sourcefile');
+  i.change(function(){
+    var file = document.getElementById("sourcefile").files[0];
+    var reader = new FileReader();
+    reader.onload = function (e) {
+    var textArea = document.getElementById("sourcefile_pastebox");
+    textArea.value = e.target.result;
+    };
+    reader.readAsText(file);
+  });
+</script>
+
+<script>
+  function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }
+
+  // Start file download.
+  document.getElementById("download").addEventListener("click", function(){
+      // Generate download of hello.txt file with some content
+      var text = document.getElementById("hidden_text").value;;
+      var filename = "{{ cert[1] }}";
+      download(filename, text);
+  }, false);
+</script>
+{% endblock %}

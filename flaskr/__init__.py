@@ -37,6 +37,9 @@ def create_app(test_config=None):
     from . import csr_generator
     app.register_blueprint(csr_generator.cg)
     
+    from . import cert_converter
+    app.register_blueprint(cert_converter.cc)
+    
     from . import index
     app.register_blueprint(index.bp)
     app.add_url_rule('/', endpoint='index')

@@ -12,7 +12,7 @@ cg = Blueprint('csr_generator', __name__, url_prefix='/csr-generator')
 
 @cg.route('/', methods=('GET', 'POST'))
 def csr_generator():
-    outputs = []
+    outputs = None
     if request.method == 'POST' and request.form['ealg'] == 'RSA':
         bits = int(request.form['rsaeb'])
         digest =  request.form['halg']
@@ -32,7 +32,9 @@ def csr_generator():
         
         csr_pem = crypto.dump_certificate_request(crypto.FILETYPE_PEM, csr).decode('utf-8')
         pkey_pem = crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey).decode('utf-8')
-        outputs = [csr_pem, pkey_pem]
+        csrfilename = request.form['CN'] +".csr"
+        keyfilename = request.form['CN'] +".key"
+        outputs = [(0,csr_pem,csrfilename), (1,pkey_pem,keyfilename)]
         
     return render_template('cert_validator/csr_generator.html', outputs=outputs)
     
